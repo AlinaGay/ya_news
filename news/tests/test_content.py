@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from news.models import Comment, News
 
@@ -50,10 +51,19 @@ class TestDetailPage(TestCase):
         )
         cls.detail_url = reverse('news:detail', args=(cls.news.id,))
         cls.author = User.objects.create(username='Комментатор')
-        now = datetime.now()
+        now = timezone.now()
         for index in range(10):
             comment = Comment.objects.create(
                 news=cls.news, author=cls.author, text=f'Tекст {index}',
             )
             comment.created = now + timedelta(days=index)
             comment.save()
+
+    def test_comments_order(self):
+        response = self.client.get(self.detail_url)
+        self.assertIn('news', response.context)
+        news = response.context['news']
+        all_comments = news.comment_set.all()
+        all_timestamps = [comment.created for comment in all_comments]
+        sorted_timestamps = sorted(all_timestamps)
+        self.assertEqual(all_timestamps, sorted_timestamps)

@@ -72,3 +72,9 @@ class TestDetailPage(TestCase):
     def test_anonymous_client_no_form(self):
         response = self.client.get(self.detail_url)
         self.assertNotIn('form', response.context)
+
+    def test_autorized_client_has_form(self):
+        self.client.force_login(self.author)
+        response = self.client.get(self.detail_url)
+        self.assertIn('form', response.context)
+        self.assertInInstance(response.context['form'], CommentForm)    

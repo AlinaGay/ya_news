@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from news.forms import CommentForm
 from news.models import Comment, News
 
 
@@ -67,3 +68,7 @@ class TestDetailPage(TestCase):
         all_timestamps = [comment.created for comment in all_comments]
         sorted_timestamps = sorted(all_timestamps)
         self.assertEqual(all_timestamps, sorted_timestamps)
+
+    def test_anonymous_client_no_form(self):
+        response = self.client.get(self.detail_url)
+        self.assertNotIn('form', response.context)

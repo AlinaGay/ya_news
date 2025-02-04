@@ -77,4 +77,4 @@ class TestDetailPage(TestCase):
         self.client.force_login(self.author)
         response = self.client.get(self.detail_url)
         self.assertIn('form', response.context)
-        self.assertInInstance(response.context['form'], CommentForm)    
+        self.assertIsInstance(response.context['form'], CommentForm)    

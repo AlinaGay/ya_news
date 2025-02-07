@@ -29,3 +29,13 @@ class TestCommentCreation(TestCase):
         self.client.post(self.url, data=self.form_data)
         comments_count = Comment.objects.count()
         self.assertEqual(comments_count, 0)
+
+    def test_user_csn_create_comment(self):
+        response = self.auth_client.post(self.url, data=self.form_data)
+        self.assertRedirects(response, f'{self.url}#comments')
+        comments_count = Comment.objects.count()
+        self.assertEqual(comments_count, 1)
+        comment = Comment.objects.get()
+        self.assertEqual(comment.text, self.COMMENT_TEXT)
+        self.assertEqual(comment.news, self.news)
+        self.assertEqual(comment.author, self.user)

@@ -63,7 +63,7 @@ class TestCommentditDelete(TestCase):
         cls.news = News.objects.create(title='Заголовок', text='Текст')
         news_url = reverse('news:detail', args=(cls.news.id,))
         cls.url_to_comments = news_url + '#comments'
-        
+
         cls.author = User.objects.create(username='Автор комментария')
         cls.author_client = Client()
         cls.author_client.force_login(cls.author)
@@ -80,3 +80,9 @@ class TestCommentditDelete(TestCase):
         cls.edit_url = reverse('news:edit', args=(cls.comment.id,))
         cls.delete_url = reverse('news:delete', args=(cls.comment.id,))
         cls.form_data = {'text': cls.NEW_COMMENT_TEXT}
+
+    def test_author_can_delete_comment(self):
+        response = self.author_client.delete(self.delete_url)
+        self.assertRedirects(response, self.url_to_comments)
+        comments_count = Comment.objects.count()
+        self.assertEqual(comments_count, 0)

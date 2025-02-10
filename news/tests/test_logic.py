@@ -53,7 +53,7 @@ class TestCommentCreation(TestCase):
         self.assertEqual(comments_count, 0)
 
 
-class TestCommentditDelete(TestCase):
+class TestCommentEditDelete(TestCase):
 
     COMMENT_TEXT = 'Текст комментария'
     NEW_COMMENT_TEXT = 'Обновленный комментарий'
@@ -92,3 +92,9 @@ class TestCommentditDelete(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         comments_count = Comment.objects.count()
         self.assertEqual(comments_count, 1)
+
+    def test_author_can_edit_comment(self):
+        response = self.author_client.post(self.edit_url, data=self.form_data)
+        self.assertRedirects(response, self.url_to_comments)
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.text, self.NEW_COMMENT_TEXT)

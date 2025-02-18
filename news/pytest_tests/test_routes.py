@@ -44,3 +44,18 @@ def test_availability_for_edit_and_delete_of_comment(parametrized_client,
     url = reverse(name, args=args)
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
+
+
+@pytest.mark.parametrize(
+    'name, args',
+    (
+        ('news:edit', pytest.lazy_fixture('id_for_comment')),
+        ('news:delete', pytest.lazy_fixture('id_for_comment')),
+    ),
+)
+def test_redirect_for_anonymous_client(client, name, args):
+    login_url = reverse('users:login')
+    url = reverse(name, args=args)
+    expected_url = f'{login_url}?next={url}'
+    response = client.get(url)
+    assertRedirects(response, expected_url)

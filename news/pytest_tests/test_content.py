@@ -30,3 +30,10 @@ def test_comments_order(client, id_for_news):
     all_timestamps = [comment.created for comment in all_comments]
     sorted_timestamps = sorted(all_timestamps)
     assert all_timestamps == sorted_timestamps
+
+
+def test_anonymous_client_no_form(client, id_for_news):
+    url = reverse('news:detail', args=id_for_news)
+    response = client.get(url)
+    assert 'form' not in response.context
+    

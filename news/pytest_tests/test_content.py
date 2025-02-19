@@ -2,6 +2,8 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 
+from news.forms import CommentForm
+
 
 @pytest.mark.django_db
 def test_news_count(client, news_data):
@@ -36,4 +38,10 @@ def test_anonymous_client_no_form(client, id_for_news):
     url = reverse('news:detail', args=id_for_news)
     response = client.get(url)
     assert 'form' not in response.context
-    
+
+
+def test_authorized_client_has_form(not_author_client, id_for_news):
+    url = reverse('news:detail', args=id_for_news)
+    response = not_author_client.get(url)
+    assert 'form' in response.context
+    assert isinstance(response.context['form'], CommentForm)

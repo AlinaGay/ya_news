@@ -78,7 +78,7 @@ def news_data():
 @pytest.fixture
 def comment_form_data():
     return {
-        'text': 'Текст комментария'
+        'text': 'Новый текст комментария'
     }
 
 

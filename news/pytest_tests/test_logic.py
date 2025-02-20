@@ -70,3 +70,28 @@ def test_user_cant_delete_comment_of_another_user(
     assert comments_count == 1
 
 
+def test_author_can_edit_comment(
+        author_client,
+        id_for_comment,
+        comment_form_data,
+        id_for_news,
+        comment):
+    news_url = reverse('news:detail', args=id_for_news)
+    url_to_comments = news_url + '#comments'
+    url = reverse('news:edit', args=id_for_comment)
+    response = author_client.post(url, data=comment_form_data)
+    assertRedirects(response, url_to_comments)
+    comment.refresh_from_db()
+    assert comment.text == comment_form_data['text']
+
+
+def test_user_cant_edit_comment_of_another_user(
+        not_author_client,
+        id_for_comment,
+        comment_form_data,
+        comment):
+    url = reverse('news:edit', args=id_for_comment)
+    response = not_author_client.post(url, data=comment_form_data)
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    comment.refresh_from_db()
+    assert comment.text != comment_form_data['text']

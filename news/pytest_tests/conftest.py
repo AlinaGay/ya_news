@@ -72,3 +72,10 @@ def news_data():
     ]
     News.objects.bulk_create(all_news)
     return all_news
+
+
+@pytest.fixture
+def comment_form_data():
+    return {
+        'text': 'Текст комментария'
+    }

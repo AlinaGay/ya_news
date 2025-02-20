@@ -3,7 +3,7 @@ from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertRedirects, assertFormError
 
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment, News
@@ -36,3 +36,14 @@ def test_user_can_create_comment(
     assert comment.news == news_from_db
     assert comment.author == author
 
+def test_user_cant_use_bad_words(author_client, id_for_news, bad_words_data):
+    url = reverse('news:detail', args=id_for_news)
+    response = author_client.post(url, data=bad_words_data)
+    assertFormError(
+        response,
+        form='form',
+        field='text',
+        errors=WARNING
+    )
+    comments_count = Comment.objects.count()
+    assert comments_count == 0

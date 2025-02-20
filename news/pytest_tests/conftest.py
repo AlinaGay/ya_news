@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.test.client import Client
 
+from news.forms import BAD_WORDS, WARNING
 from news.models import News, Comment
 
 
@@ -79,3 +80,8 @@ def comment_form_data():
     return {
         'text': 'Текст комментария'
     }
+
+
+@pytest.fixture
+def bad_words_data():
+    return {'text': f'Какой-то текст, {BAD_WORDS[0]}, еще текст'}

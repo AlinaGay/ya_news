@@ -36,6 +36,7 @@ def test_user_can_create_comment(
     assert comment.news == news_from_db
     assert comment.author == author
 
+
 def test_user_cant_use_bad_words(author_client, id_for_news, bad_words_data):
     url = reverse('news:detail', args=id_for_news)
     response = author_client.post(url, data=bad_words_data)
@@ -45,5 +46,15 @@ def test_user_cant_use_bad_words(author_client, id_for_news, bad_words_data):
         field='text',
         errors=WARNING
     )
+    comments_count = Comment.objects.count()
+    assert comments_count == 0
+
+
+def test_author_can_delete_comment(author_client, id_for_comment, id_for_news):
+    url = reverse('news:delete', args=id_for_comment)
+    response = author_client.delete(url)
+    news_url = reverse('news:detail', args=id_for_news)
+    url_to_comments = news_url + '#comments'
+    assertRedirects(response, url_to_comments)
     comments_count = Comment.objects.count()
     assert comments_count == 0

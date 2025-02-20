@@ -58,3 +58,15 @@ def test_author_can_delete_comment(author_client, id_for_comment, id_for_news):
     assertRedirects(response, url_to_comments)
     comments_count = Comment.objects.count()
     assert comments_count == 0
+
+
+def test_user_cant_delete_comment_of_another_user(
+        not_author_client,
+        id_for_comment):
+    url = reverse('news:delete', args=id_for_comment)
+    response = not_author_client.delete(url)
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    comments_count = Comment.objects.count()
+    assert comments_count == 1
+
+

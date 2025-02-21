@@ -1,11 +1,9 @@
 from http import HTTPStatus
 
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
 from django.urls import reverse
 from pytest_django.asserts import assertRedirects, assertFormError
 
-from news.forms import BAD_WORDS, WARNING
+from news.forms import WARNING
 from news.models import Comment, News
 
 

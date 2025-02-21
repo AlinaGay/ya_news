@@ -19,7 +19,7 @@ def test_anonymous_user_cant_create_comment(
     assert comments_count == 0
 
 
-def test_user_can_create_comment(
+def test_auth_user_can_create_comment(
         author,
         author_client,
         id_for_news,

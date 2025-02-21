@@ -37,10 +37,8 @@ def test_pages_availability_for_anonymous_user(not_author_client, name, args):
         ('news:delete', pytest.lazy_fixture('id_for_comment')),
     ),
 )
-def test_availability_for_edit_and_delete_of_comment(parametrized_client,
-                                                name,
-                                                args,
-                                                expected_status):
+def test_availability_for_author_for_edit_and_delete_of_comment(
+        parametrized_client, name, args, expected_status):
     url = reverse(name, args=args)
     response = parametrized_client.get(url)
     assert response.status_code == expected_status
